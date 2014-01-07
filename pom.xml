@@ -1,0 +1,89 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+
+   <groupId>de.strullerbaumann</groupId>
+   <artifactId>TelemeeJavaClient</artifactId>
+   <version>0.01-SNAPSHOT</version>
+   <packaging>jar</packaging>
+
+   <name>TelemeeJavaClient</name>
+   <description>Telemee java client</description>
+   <url>http://telemee.struller-baumann.de</url>
+   <organization>
+      <name>Thomas Struller-Baumann</name>
+      <url>http://struller-baumann.de</url>
+   </organization>
+   <inceptionYear>2013</inceptionYear>
+
+   <licenses>
+      <license>
+         <name>The Apache Software License, Version 2.0</name>
+         <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+         <distribution>repo</distribution>
+      </license>
+   </licenses>
+
+   <build>
+      <finalName>telemeeJavaClient</finalName>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.1</version>
+            <configuration>
+               <source>1.7</source>
+               <target>1.7</target>
+            </configuration>
+         </plugin>
+         <!--license -->
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <version>1.5</version>
+            <configuration>
+               <verbose>false</verbose>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>add-apache-headers</id>
+                  <goals>
+                     <goal>update-file-header</goal>
+                  </goals>
+                  <phase>process-sources</phase>
+                  <configuration>
+                     <licenseName>apache_v2</licenseName>
+                     <excludes>
+                        <exclude>**/*.json</exclude>
+                        <exclude>**/*.xml</exclude>
+                     </excludes>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+   <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
+
+   <dependencies>
+      <dependency>
+         <groupId>com.sun.jersey</groupId>
+         <artifactId>jersey-client</artifactId>
+         <version>1.18</version>
+      </dependency>
+      <dependency>
+         <groupId>org.glassfish</groupId>
+         <artifactId>javax.json</artifactId>
+         <version>1.0.4</version>
+         <type>jar</type>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.11</version>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+</project>
