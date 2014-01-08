@@ -9,9 +9,9 @@ package de.strullerbaumann.telemeejavaclient.boundary;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,21 +28,20 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * TelemeeJavaClient is the client to communicate from a java-application to the
- telemee-server.
+ * telemee-server.
  * <p>
  * Example usage:
  * <p>
  * <code>
- TelemeeJavaClient tj = new TelemeeJavaClient(); <br/>
+ * TelemeeJavaClient tj = new TelemeeJavaClient(); <br/>
  * tj.init(); <br/>
- tj.setLogLevel(TelemeeJavaClient.INFO); <br/>
+ * tj.setLogLevel(TelemeeJavaClient.INFO); <br/>
  * <br/>
  * TelemeeApp TEST_APP_01 = new TelemeeApp("Testapp 01"); <br/>
  * Channel TEST_CHANNEL_01 = new Channel("Testchannel 01"); <br/>
@@ -84,13 +83,14 @@ public class TelemeeJavaClient implements Serializable {
    private Channel currentChannel;
    private ChannelAttribute currentChannelAttribute;
    private LogEntry currentLogEntry;
-   private final Map<String, TelemeeApp> telemeeApps = new ConcurrentHashMap<>();
-   private final Map<String, Channel> channels = new ConcurrentHashMap<>();
-   private final Map<String, ChannelAttribute> channelAttributes = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, TelemeeApp> telemeeApps = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, Channel> channels = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, ChannelAttribute> channelAttributes = new ConcurrentHashMap<>();
    private final List<LogEntry> logEntries = new ArrayList<>();
 
    /**
-    * Initializes TelemeeJavaClient with the default base-URI http://localhost:8080.
+    * Initializes TelemeeJavaClient with the default base-URI
+    * http://localhost:8080.
     *
     */
    public void init() {
@@ -243,9 +243,9 @@ public class TelemeeJavaClient implements Serializable {
    }
 
    /**
-    * Get all TelemeeApps from the TelemeeJavaClient-Chache. TelemeeApps from other
- applications could be not in this collection, because it is only
- synchronized with the server on the instantiation of TelemeeJavaClient.
+    * Get all TelemeeApps from the TelemeeJavaClient-Chache. TelemeeApps from
+    * other applications could be not in this collection, because it is only
+    * synchronized with the server on the instantiation of TelemeeJavaClient.
     *
     * @return Collection<TelemeeApp>
     */
@@ -255,8 +255,8 @@ public class TelemeeJavaClient implements Serializable {
 
    /**
     * Get all Channels. Channels from other applications could be not in this
- collection, because it is only synchronized with the server on the
- instantiation of TelemeeJavaClient.
+    * collection, because it is only synchronized with the server on the
+    * instantiation of TelemeeJavaClient.
     *
     * @return Collection<Channel>
     */
@@ -266,8 +266,8 @@ public class TelemeeJavaClient implements Serializable {
 
    /**
     * Get all ChannelAttributes. ChannelAttributes from other applications could
- be not in this collection, because it is only synchronized with the server
- on the instantiation of TelemeeJavaClient.
+    * be not in this collection, because it is only synchronized with the server
+    * on the instantiation of TelemeeJavaClient.
     *
     * @return Collection<ChannelAttribute>
     */
@@ -283,11 +283,9 @@ public class TelemeeJavaClient implements Serializable {
     * @return TelemeeJavaClient for fluent-API
     */
    public TelemeeJavaClient forTelemeeApp(TelemeeApp telemeeApp) {
-      if (this.telemeeApps.get(telemeeApp.getName()) == null) {
-         this.telemeeApps.put(telemeeApp.getName(), telemeeApp);
-      } else {
-         telemeeApp = this.telemeeApps.get(telemeeApp.getName());
-      }
+      this.telemeeApps.putIfAbsent(telemeeApp.getName(), telemeeApp);
+      telemeeApp = this.telemeeApps.get(telemeeApp.getName());
+      System.out.println("forTelemeeApp = " + telemeeApp);
       this.currentApp = telemeeApp;
       return this;
    }
@@ -299,11 +297,8 @@ public class TelemeeJavaClient implements Serializable {
     * @return TelemeeJavaClient for fluent-API
     */
    public TelemeeJavaClient forChannel(Channel channel) {
-      if (this.channels.get(channel.getName()) == null) {
-         this.channels.put(channel.getName(), channel);
-      } else {
-         channel = this.channels.get(channel.getName());
-      }
+      this.channels.putIfAbsent(channel.getName(), channel);
+      channel = this.channels.get(channel.getName());
       if (this.currentApp == null) {
          throw new IllegalStateException("Please define a telemeeApp for channel " + channel);
       }
@@ -319,11 +314,8 @@ public class TelemeeJavaClient implements Serializable {
     * @return TelemeeJavaClient for fluent-API
     */
    public TelemeeJavaClient forChannelAttribute(ChannelAttribute channelAttribute) {
-      if (this.channelAttributes.get(channelAttribute.getName()) == null) {
-         this.channelAttributes.put(channelAttribute.getName(), channelAttribute);
-      } else {
-         channelAttribute = this.channelAttributes.get(channelAttribute.getName());
-      }
+      this.channelAttributes.putIfAbsent(channelAttribute.getName(), channelAttribute);
+      channelAttribute = this.channelAttributes.get(channelAttribute.getName());
       if (this.currentChannel == null) {
          throw new IllegalStateException("Please define a channel for channelattribute " + channelAttribute);
       }

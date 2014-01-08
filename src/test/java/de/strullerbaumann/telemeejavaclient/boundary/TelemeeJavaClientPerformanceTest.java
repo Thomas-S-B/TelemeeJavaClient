@@ -33,14 +33,14 @@ public class TelemeeJavaClientPerformanceTest {
 
    private static TelemeeJavaClient tj;
 
-   private final static TelemeeApp TEST_APP_01 = new TelemeeApp("TelemeeJavaSmokeTest -- Testapp 01");
-   private final static TelemeeApp TEST_APP_02 = new TelemeeApp("TelemeeJavaSmokeTest -- Testapp 02");
-   private final static Channel TEST_CHANNEL_01 = new Channel("TelemeeJavaSmokeTest -- Testchannel 01");
-   private final static Channel TEST_CHANNEL_02 = new Channel("TelemeeJavaSmokeTest -- Testchannel 02");
-   private final static ChannelAttribute TEST_CHANNELATTRIBUTE_X = new ChannelAttribute("TelemeeJavaSmokeTest -- X");
-   private final static ChannelAttribute TEST_CHANNELATTRIBUTE_Y = new ChannelAttribute("TelemeeJavaSmokeTest -- Y");
-   private final static ChannelAttribute TEST_CHANNELATTRIBUTE_Z = new ChannelAttribute("TelemeeJavaSmokeTest -- Z");
-   private final static ChannelAttribute TEST_CHANNELATTRIBUTE_GROUP = new ChannelAttribute("TelemeeJavaSmokeTest -- Group");
+   private final static TelemeeApp TEST_APP_01 = new TelemeeApp("TelemeeJavaClientPerformanceTest -- Testapp 01");
+   private final static TelemeeApp TEST_APP_02 = new TelemeeApp("TelemeeJavaClientPerformanceTest -- Testapp 02");
+   private final static Channel TEST_CHANNEL_01 = new Channel("TelemeeJavaClientPerformanceTest -- Testchannel 01");
+   private final static Channel TEST_CHANNEL_02 = new Channel("TelemeeJavaClientPerformanceTest -- Testchannel 02");
+   private final static ChannelAttribute TEST_CHANNELATTRIBUTE_X = new ChannelAttribute("TelemeeJavaClientPerformanceTest -- X");
+   private final static ChannelAttribute TEST_CHANNELATTRIBUTE_Y = new ChannelAttribute("TelemeeJavaClientPerformanceTest -- Y");
+   private final static ChannelAttribute TEST_CHANNELATTRIBUTE_Z = new ChannelAttribute("TelemeeJavaClientPerformanceTest -- Z");
+   private final static ChannelAttribute TEST_CHANNELATTRIBUTE_GROUP = new ChannelAttribute("TelemeeJavaClientPerformanceTest -- Group");
 
    private final static int COUNT_CREATE = 500;
    private final static Logger LOGGER = Logger.getLogger(TelemeeJavaClientPerformanceTest.class.getName());
