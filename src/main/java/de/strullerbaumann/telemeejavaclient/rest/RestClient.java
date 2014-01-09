@@ -60,6 +60,7 @@ public class RestClient {
    private String baseURI = DEFAULT_BASE_URI;
    private static final int DEFAULT_THREADPOOLSIZE = 5;
    private int threadPoolSize = DEFAULT_THREADPOOLSIZE;
+   private final List<Future> futureResponses = new ArrayList<>();
 
    private static final Logger LOGGER = Logger.getLogger(RestClient.class.getName());
 
@@ -95,6 +96,7 @@ public class RestClient {
    }
 
    public void destroy() {
+      waitTillAllIsDone();
       client.getExecutorService().shutdown();
 //      try {
 //         client.getExecutorService().awaitTermination(1, TimeUnit.SECONDS);
@@ -123,8 +125,8 @@ public class RestClient {
                  .accept(MediaType.APPLICATION_JSON)
                  .get(String.class);
          if (!jsonTelemeeApps.equals("null")) {
-            try (JsonReader reader = Json.createReader(new StringReader(jsonTelemeeApps))) {
-               JsonObject jsonObject = reader.readObject();
+            try (JsonReader readerArrayOrObject = Json.createReader(new StringReader(jsonTelemeeApps))) {
+               JsonObject jsonObject = readerArrayOrObject.readObject();
                JsonArray arrayTelemeeApps;
                try {
                   arrayTelemeeApps = jsonObject.getJsonArray("telemeeApp");
@@ -133,8 +135,8 @@ public class RestClient {
                   arrayTelemeeApps = Json.createArrayBuilder().add(jsonObject.getJsonObject("telemeeApp")).build();
                }
                for (JsonValue value : arrayTelemeeApps) {
-                  JsonReader reader2 = Json.createReader(new StringReader(value.toString()));
-                  JsonObject jsonObject2 = reader2.readObject();
+                  JsonReader reader = Json.createReader(new StringReader(value.toString()));
+                  JsonObject jsonObject2 = reader.readObject();
                   TelemeeApp telemeeAppFromServer = new TelemeeApp();
                   telemeeAppFromServer.setId(Long.valueOf(jsonObject2.getString("id")));
                   telemeeAppFromServer.setName(jsonObject2.getString("name"));
@@ -157,8 +159,8 @@ public class RestClient {
                  .accept(MediaType.APPLICATION_JSON)
                  .get(String.class);
          if (!jsonChannels.equals("null")) {
-            try (JsonReader reader = Json.createReader(new StringReader(jsonChannels))) {
-               JsonObject jsonObject = reader.readObject();
+            try (JsonReader readerArrayOrObject = Json.createReader(new StringReader(jsonChannels))) {
+               JsonObject jsonObject = readerArrayOrObject.readObject();
                JsonArray arrayChannels;
                try {
                   arrayChannels = jsonObject.getJsonArray("channel");
@@ -168,8 +170,8 @@ public class RestClient {
 
                }
                for (JsonValue value : arrayChannels) {
-                  JsonReader reader2 = Json.createReader(new StringReader(value.toString()));
-                  JsonObject jsonObject2 = reader2.readObject();
+                  JsonReader reader = Json.createReader(new StringReader(value.toString()));
+                  JsonObject jsonObject2 = reader.readObject();
                   Channel channelFromServer = new Channel();
                   channelFromServer.setId(Long.valueOf(jsonObject2.getString("id")));
                   channelFromServer.setName(jsonObject2.getString("name"));
@@ -191,8 +193,8 @@ public class RestClient {
                  .accept(MediaType.APPLICATION_JSON)
                  .get(String.class);
          if (!jsonChannelAttributes.equals("null")) {
-            try (JsonReader reader = Json.createReader(new StringReader(jsonChannelAttributes))) {
-               JsonObject jsonObject = reader.readObject();
+            try (JsonReader readerArrayOrObject = Json.createReader(new StringReader(jsonChannelAttributes))) {
+               JsonObject jsonObject = readerArrayOrObject.readObject();
                JsonArray arrayChannelAttributes;
                try {
                   arrayChannelAttributes = jsonObject.getJsonArray("channelAttribute");
@@ -201,8 +203,8 @@ public class RestClient {
                   arrayChannelAttributes = Json.createArrayBuilder().add(jsonObject.getJsonObject("channelAttribute")).build();
                }
                for (JsonValue value : arrayChannelAttributes) {
-                  JsonReader reader2 = Json.createReader(new StringReader(value.toString()));
-                  JsonObject jsonObject2 = reader2.readObject();
+                  JsonReader reader = Json.createReader(new StringReader(value.toString()));
+                  JsonObject jsonObject2 = reader.readObject();
                   ChannelAttribute channelAttributeFromServer = new ChannelAttribute();
                   channelAttributeFromServer.setId(Long.valueOf(jsonObject2.getString("id")));
                   channelAttributeFromServer.setName(jsonObject2.getString("name"));
@@ -327,8 +329,6 @@ public class RestClient {
       }
    }
 
-   private final List<Future> futures = new ArrayList<>();
-
    public void createLogEntryAsync(LogEntry newLogEntry) throws InterruptedException {
       JsonObjectBuilder jsonLogEntry = Json.createObjectBuilder();
       jsonLogEntry.add("channelID", newLogEntry.getChannel().getId());
@@ -344,11 +344,11 @@ public class RestClient {
 
       AsyncWebResource webResource = client.asyncResource(baseURI + "telemee/resources/logentries/");
       Future futureResponse = webResource.type(MediaType.APPLICATION_JSON).post(ClientResponse.class, jsonLogEntry.build().toString());
-      futures.add(futureResponse);
+      futureResponses.add(futureResponse);
    }
 
    public void waitTillAllIsDone() {
-      for (Future future : futures) {
+      for (Future future : futureResponses) {
          try {
             future.get();
          } catch (InterruptedException | ExecutionException ex) {
